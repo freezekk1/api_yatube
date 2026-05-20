@@ -1,77 +1,64 @@
-# API для Yatube
+# API Yatube
 
-`api-final-yatube-ad-vlad` — учебный backend-проект на Django REST Framework для социальной платформы Yatube. Он предоставляет API для публикаций, комментариев, сообществ и подписок, а также JWT-аутентификацию для защищённых операций.
+`API Yatube` - REST API для социальной платформы с публикациями, комментариями, группами и подписками.
+Сервис позволяет читать контент без авторизации, а для создания и изменения данных использует JWT-токены.
 
-## Что умеет API
+## Что умеет проект
 
-- выдаёт список постов и отдельные публикации;
-- создаёт, редактирует и удаляет посты автора;
-- возвращает список сообществ и информацию о группе;
-- позволяет получать, создавать, редактировать и удалять комментарии к постам;
-- поддерживает подписки на авторов и поиск по подпискам;
-- выдаёт JWT-токены для авторизации.
-
-Неавторизованные пользователи могут только читать данные. Изменение контента и работа с `/follow/` доступны только авторизованным пользователям.
+- работать с постами и комментариями;
+- отдавать список групп и детали группы;
+- создавать подписки на авторов и искать по ним;
+- выдавать и обновлять JWT-токены.
 
 ## Технологии
 
-- Python 3.11
+- Python 3.10
 - Django 3.2
-- Django REST Framework 3.12
+- Django REST Framework
 - Simple JWT
-- SQLite
 
 ## Как запустить проект локально
 
-1. Клонируйте репозиторий:
+1. Клонировать репозиторий:
 
 ```bash
-git clone https://github.com/911-boy/api-final-yatube-ad-vlad.git
-cd api-final-yatube-ad-vlad
+git clone <repo_url>
+cd api-final-yatube-ad
 ```
 
-2. Создайте и активируйте виртуальное окружение.
+2. Создать и активировать виртуальное окружение:
 
-Windows PowerShell:
-
-```powershell
+```bash
 python -m venv venv
-.\venv\Scripts\Activate.ps1
-```
-
-Linux/macOS:
-
-```bash
-python3 -m venv venv
 source venv/bin/activate
 ```
 
-3. Установите зависимости:
+Для Windows:
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+3. Установить зависимости:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Выполните миграции:
+4. Выполнить миграции и запустить сервер:
 
 ```bash
 cd yatube_api
 python manage.py migrate
-```
-
-5. Запустите сервер:
-
-```bash
 python manage.py runserver
 ```
 
-После запуска документация будет доступна по адресу:
-
-`http://127.0.0.1:8000/redoc/`
+Документация будет доступна по адресу `http://127.0.0.1:8000/redoc/`.
 
 ## Примеры запросов
 
-Получить JWT-токен:
+Получение JWT-токена:
 
 ```http
 POST /api/v1/jwt/create/
@@ -83,7 +70,7 @@ Content-Type: application/json
 }
 ```
 
-Создать пост:
+Создание поста:
 
 ```http
 POST /api/v1/posts/
@@ -96,13 +83,7 @@ Content-Type: application/json
 }
 ```
 
-Получить комментарии к посту:
-
-```http
-GET /api/v1/posts/1/comments/
-```
-
-Подписаться на автора:
+Создание подписки:
 
 ```http
 POST /api/v1/follow/
@@ -114,19 +95,8 @@ Content-Type: application/json
 }
 ```
 
-## Основные эндпоинты
+Получение комментариев поста:
 
-- `GET /api/v1/posts/`
-- `GET /api/v1/posts/{id}/`
-- `POST /api/v1/posts/`
-- `PUT/PATCH/DELETE /api/v1/posts/{id}/`
-- `GET /api/v1/groups/`
-- `GET /api/v1/groups/{id}/`
-- `GET /api/v1/posts/{post_id}/comments/`
-- `POST /api/v1/posts/{post_id}/comments/`
-- `GET/PUT/PATCH/DELETE /api/v1/posts/{post_id}/comments/{id}/`
-- `GET /api/v1/follow/`
-- `POST /api/v1/follow/`
-- `POST /api/v1/jwt/create/`
-- `POST /api/v1/jwt/refresh/`
-- `POST /api/v1/jwt/verify/`
+```http
+GET /api/v1/posts/1/comments/
+```
