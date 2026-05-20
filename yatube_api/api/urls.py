@@ -1,39 +1,38 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+"""URL routes for API endpoints and docs."""
 
-from .views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
+from django.urls import include, path
+from django.views.generic import TemplateView
+from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.permissions import AllowAny
+from rest_framework.routers import DefaultRouter
+from rest_framework.schemas import get_schema_view
+
+from .views import CommentViewSet, GroupViewSet, PostViewSet
 
 router = DefaultRouter()
-router.register('posts', PostViewSet, basename='posts')
-router.register('groups', GroupViewSet, basename='groups')
-router.register('follow', FollowViewSet, basename='follow')
+router.register('posts', PostViewSet)
+router.register('groups', GroupViewSet)
+router.register(
+    r'posts/(?P<post_id>\d+)/comments',
+    CommentViewSet,
+    basename='comments'
+)
+
+schema_view = get_schema_view(
+    title='Yatube API',
+    description='Учебный API для постов, групп и комментариев.',
+    version='1.0.0',
+    public=True,
+    permission_classes=[AllowAny],
+)
 
 urlpatterns = [
+    path('', include(router.urls)),
+    path('api-token-auth/', obtain_auth_token),
+    path('schema/', schema_view, name='schema'),
     path(
-        'v1/posts/<int:post_id>/comments/',
-        CommentViewSet.as_view({
-            'get': 'list',
-            'post': 'create',
-        }),
-        name='comments-list',
+        'redoc/',
+        TemplateView.as_view(template_name='api/redoc.html'),
+        name='redoc',
     ),
-    path(
-        'v1/posts/<int:post_id>/comments/<int:pk>/',
-        CommentViewSet.as_view({
-            'get': 'retrieve',
-            'put': 'update',
-            'patch': 'partial_update',
-            'delete': 'destroy',
-        }),
-        name='comments-detail',
-    ),
-    path('v1/jwt/create/', TokenObtainPairView.as_view(), name='jwt-create'),
-    path('v1/jwt/refresh/', TokenRefreshView.as_view(), name='jwt-refresh'),
-    path('v1/jwt/verify/', TokenVerifyView.as_view(), name='jwt-verify'),
-    path('v1/', include(router.urls)),
 ]
