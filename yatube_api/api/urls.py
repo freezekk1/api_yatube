@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from api.views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
+from .views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
 
 router = DefaultRouter()
 router.register('posts', PostViewSet, basename='posts')
@@ -16,20 +16,21 @@ router.register('follow', FollowViewSet, basename='follow')
 urlpatterns = [
     path(
         'v1/posts/<int:post_id>/comments/',
-        CommentViewSet.as_view({'get': 'list', 'post': 'create'}),
-        name='comment-list',
+        CommentViewSet.as_view({
+            'get': 'list',
+            'post': 'create',
+        }),
+        name='comments-list',
     ),
     path(
         'v1/posts/<int:post_id>/comments/<int:pk>/',
-        CommentViewSet.as_view(
-            {
-                'get': 'retrieve',
-                'put': 'update',
-                'patch': 'partial_update',
-                'delete': 'destroy',
-            }
-        ),
-        name='comment-detail',
+        CommentViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy',
+        }),
+        name='comments-detail',
     ),
     path('v1/jwt/create/', TokenObtainPairView.as_view(), name='jwt-create'),
     path('v1/jwt/refresh/', TokenRefreshView.as_view(), name='jwt-refresh'),
